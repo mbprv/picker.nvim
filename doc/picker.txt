@@ -40,13 +40,13 @@ Notable behavior:
 **vim.pack**: the built-in package manager (Neovim >= 0.12, `:help vim.pack`):
 
 >lua
-    vim.pack.add({ "https://github.com/mbfoss/picker.nvim" })
+    vim.pack.add({ "https://github.com/<owner>/picker.nvim" })
 <
 
 **lazy.nvim**
 
 >lua
-    { "mbfoss/picker.nvim", cmd = "Picker" }
+    { "<owner>/picker.nvim", cmd = "Picker" }
 <
 
 Use `lazy = false` if your own config sets `vim.ui.select` to
@@ -384,7 +384,7 @@ Naming:
   -----------------------------------------------------------------------
 Filetype icons in `files` and `config_files` come from an installed icon
 provider. picker ships no icon data. It tries, in order, `nvim-web-icon`,
-keystone.nvim <https://github.com/mbfoss/keystone.nvim> (`keystone.icons`) and
+keystone.nvim <https://github.com/<owner>/keystone.nvim> (`keystone.icons`) and
 mini.icons <https://github.com/echasnovski/mini.icons>, and uses the first one
 found. Each icon uses the highlight group its provider returns. With no
 provider installed, rows are rendered without icons.
