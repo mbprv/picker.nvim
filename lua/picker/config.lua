@@ -10,8 +10,6 @@ local M = {}
 ---@field preview_ratio number? Fraction of the frame's width the preview takes, clamped to 0.1-0.9 (default 0.5).
 ---@field auto_complete_flags boolean? Auto-open flag completion on an empty flags line and while typing (default true).
 ---@field rg_path string? Path to the ripgrep executable the `live_grep` picker runs (default "rg", resolved on `PATH`).
----@field replace_copen boolean? Open the `quickfix` picker in place of the native quickfix window when `:copen` runs (default false).
----@field replace_lopen boolean? Open the `loclist` picker in place of the native location-list window when `:lopen` runs (default false).
 
 ---@return picker.Config
 local function _defaults()
@@ -20,8 +18,6 @@ local function _defaults()
         height_ratio        = 0.25,
         preview_ratio       = 0.5,
         auto_complete_flags = true,
-        replace_copen       = false,
-        replace_lopen       = false,
     }
 end
 

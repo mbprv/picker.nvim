@@ -185,7 +185,6 @@ end
 ---@param opts picker.Config?
 function M.setup(opts)
     cfgmod.apply(opts)
-    require("picker.copen").apply(cfgmod.current)
 end
 
 ---Register a user command `name` that forwards its arguments and completion to
