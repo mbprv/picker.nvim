@@ -289,6 +289,14 @@ describe("colorschemes", function()
         spec.on_cursor({ name = name })
     end
 
+    ---Applying a scheme is debounced while browsing and then scheduled, so a
+    ---browse does not take effect before `browse()` returns. Wait for the
+    ---change instead of asserting on the spot.
+    ---@param cond fun(): boolean
+    local function wait_for(cond)
+        assert.is_true(vim.wait(2000, cond, 20))
+    end
+
     it("applies while browsing, restores when dismissed, keeps the choice on confirm", function()
         vim.cmd("colorscheme habamax")
         local original = vim.g.colors_name
@@ -298,15 +306,18 @@ describe("colorschemes", function()
         assert.is_nil(spec.previewer)
 
         browse(spec, "blue")
+        wait_for(function() return vim.g.colors_name == "blue" end)
         assert.equals("blue", vim.g.colors_name)
         -- `:colorscheme` runs `:highlight clear`, so the picker's own groups have
         -- to be put back for the list to stay readable.
         assert.is_true(next(vim.api.nvim_get_hl(0, { name = "PickerMatch" })) ~= nil)
 
         spec.on_confirm(nil)
+        wait_for(function() return vim.g.colors_name == original end)
         assert.equals(original, vim.g.colors_name)
 
         browse(spec, "blue")
+        wait_for(function() return vim.g.colors_name == "blue" end)
         spec.on_confirm({ name = "blue" })
         assert.equals("blue", vim.g.colors_name)
 
@@ -319,10 +330,16 @@ describe("colorschemes", function()
         local notified
         local notify = vim.notify
         vim.notify = function(msg) notified = msg end
-        assert.has_no.errors(function()
-            browse(spec, "no_such_colorscheme")
+        -- The notify happens in the same deferred call that loads the scheme, so
+        -- wait for it before putting `vim.notify` back.
+        local ok, err = pcall(function()
+            assert.has_no.errors(function()
+                browse(spec, "no_such_colorscheme")
+            end)
+            vim.wait(2000, function() return notified ~= nil end, 20)
         end)
         vim.notify = notify
+        assert.is_true(ok, err)
         assert.is_not_nil(notified)
     end)
 end)
